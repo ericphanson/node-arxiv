@@ -1,13 +1,13 @@
 {
     "name": "arxiv",
-    "version": "0.0.4",
+    "version": "0.0.7",
     "repository": {
         "type": "git",
-        "url": "http://github.com/spro/node-arxiv"
+        "url": "https://github.com/ericphanson/node-arxiv"
     },
     "main": "lib/index.js",
     "scripts": {
-        "build": "cjsx --bare -o lib -c src"
+        "build": "coffee -o lib -c src"
     },
     "dependencies": {
         "request": "^2.67.0",
@@ -15,5 +15,8 @@
     },
     "keywords": [
         "arxiv"
-    ]
+    ],
+    "devDependencies": {
+        "coffeescript": "^2.3.0"
+    }
 }

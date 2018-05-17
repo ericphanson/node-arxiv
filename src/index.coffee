@@ -1,8 +1,13 @@
 request = require 'request'
 xml2js = require 'xml2js'
 
-makeUrl = (query, max_results=1000, sort_by='submittedDate') ->
-    "http://export.arxiv.org/api/query?sortBy=#{sort_by}&max_results=#{max_results}&search_query=#{query}"
+makeUrl = (query, max_results = 1000, ids, sort_by='submittedDate') ->
+    url = "http://export.arxiv.org/api/query?sortBy=#{sort_by}&max_results=#{max_results}"
+    if query
+        url += "&search_query=#{query}"
+    if ids
+        url += "&id_list=#{ids}"
+    url
 
 key_map =
     author: 'au'
@@ -30,6 +35,9 @@ coerceQuery = (query) ->
         querys.push [k, v].join(':')
     querys.join('+AND+')
 
+coerceIds = (ids = []) ->
+    ids.join(',')
+
 unique = (a, k) ->
     a_ = []
     known = {}
@@ -50,8 +58,9 @@ coerceEntry = (entry) -> {
     categories: entry.category.map (category) -> category['$']['term']
 }
 
-search = (query, cb) ->
-    request.get makeUrl(coerceQuery(query)), (err, resp, data) ->
+search = (query, cb, max_results, id_list) ->
+    console.log makeUrl(coerceQuery(query), max_results, coerceIds(id_list))
+    request.get makeUrl(coerceQuery(query), max_results, coerceIds(id_list)), (err, resp, data) ->
         xml2js.parseString data, (err, parsed) ->
             if err?
                 cb err
